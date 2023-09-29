@@ -9,7 +9,7 @@ import menuItemsConfig from "../config/menuItemsConfig";
 const useStyles = makeStyles(() => ({
   root: {
     width: 200,
-    borderBottom: "1px solid gray",
+    borderRight: "1px solid gray",
   },
   title: {
     display: "flex",
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() => ({
   },
   label: {
     fontSize: 18,
-    fontWeight: 700,
+    fontWeight: 600,
   },
   subtext: {
     fontSize: 12,
