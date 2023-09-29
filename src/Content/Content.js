@@ -51,17 +51,36 @@ const useStyles = makeStyles(() => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  productName: {
+    fontWeight: 600,
+    textAlign: "center",
+  },
+  productPrice: {
+    fontSize: 14,
+    fontWeight: 500,
+    color: "red",
+    textAlign: "center",
+  },
 }));
 
-const Content = () => {
+const Content = (props) => {
   const classes = useStyles();
+  const { setProducts } = props;
+
+  const onProductClick = (product) => {
+    setProducts([product]);
+  };
 
   const productsGrid = products.map((product) => (
-    <div key={product.id} className={classes.product}>
+    <div
+      key={product.id}
+      className={classes.product}
+      onClick={(e) => onProductClick(product)}
+    >
       <img src={product.image} alt="product.name" />
       <div className={classes.productDetails}>
-        <div>{product.name}</div>
-        <div>{product.price}</div>
+        <div className={classes.productName}>{product.name}</div>
+        <div className={classes.productPrice}>{product.price}</div>
       </div>
     </div>
   ));
