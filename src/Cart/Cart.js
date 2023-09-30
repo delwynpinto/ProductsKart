@@ -50,8 +50,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Cart = ({ products }) => {
+const Cart = (props) => {
   const classes = useStyles();
+  const { products, hideCart, increaseCount, decreaseCount } = props;
+
   const overlayClass = clsx(classes.overlay, {
     [classes.show]: products && products.length > 0,
   });
@@ -63,10 +65,21 @@ const Cart = ({ products }) => {
         <div className={classes.productName}>{product.name}</div>
         <div className={classes.productPrice}>{product.price}</div>
       </div>
+      <div>
+        <button onClick={(e) => decreaseCount(product)}>-</button>
+        {product.count}
+        <button onClick={(e) => increaseCount(product)}>+</button>
+      </div>
     </div>
   ));
 
-  return <div className={overlayClass}>{productsList}</div>;
+  return (
+    <div className={overlayClass}>
+      <button onClick={hideCart}>Close Cart</button>
+
+      {productsList}
+    </div>
+  );
 };
 
 export default Cart;

@@ -65,10 +65,10 @@ const useStyles = makeStyles(() => ({
 
 const Content = (props) => {
   const classes = useStyles();
-  const { setProducts } = props;
+  const { addToCart } = props;
 
   const onProductClick = (product) => {
-    setProducts([product]);
+    addToCart(product);
   };
 
   const productsGrid = products.map((product) => (
