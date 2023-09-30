@@ -8,15 +8,16 @@ import menuItemsConfig from "../config/menuItemsConfig";
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: 200,
-    borderRight: "1px solid gray",
+    borderRight: "1px solid rgb(158 158 159)",
   },
   title: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     height: 100,
     borderBottom: "1px solid gray",
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   shoppingIcon: {
     marginRight: 16,
@@ -31,10 +32,12 @@ const useStyles = makeStyles(() => ({
   },
   menu: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     height: 100,
     borderBottom: "1px solid gray",
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   filterContainer: {
     height: "100%",
@@ -44,7 +47,7 @@ const useStyles = makeStyles(() => ({
   },
   sectionHeader: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   dashboard: {
@@ -69,6 +72,10 @@ const useStyles = makeStyles(() => ({
     padding: 4,
     borderRadius: 4,
   },
+  menuText: {
+    color: "gray",
+    fontSize: 14,
+  },
 }));
 
 const Menu = () => {
@@ -78,7 +85,7 @@ const Menu = () => {
     <div className={classes.sectionItem} key={item.key}>
       <div className={classes.menuItem}>
         {item.icon}
-        {item.text}
+        <span className={classes.menuText}>{item.text}</span>
       </div>
       {item.label && <div className={classes.menuLabel}>{item.label}</div>}
     </div>
@@ -100,7 +107,7 @@ const Menu = () => {
           <div className={classes.subtext}>Menu</div>
           <div className={classes.label}>Burger</div>
         </div>
-        <div>
+        <div className={classes.filterContainer}>
           <FilterListIcon />
           <div className={classes.subtext}>Filter</div>
         </div>

@@ -10,7 +10,7 @@ const useStyles = makeStyles(() => ({
     position: "fixed",
     top: "5%",
     right: 0,
-    width: "50%",
+    width: 350,
     height: "90%",
     backgroundColor: "white",
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
@@ -34,7 +34,7 @@ const useStyles = makeStyles(() => ({
     backgroundColor: "white",
     borderRadius: 8,
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 16,
     margin: 16,
   },
@@ -46,7 +46,8 @@ const useStyles = makeStyles(() => ({
   },
   productName: {
     fontWeight: 600,
-    textAlign: "center",
+    textAlign: "left",
+    marginLeft: 4,
   },
   productPrice: {
     fontSize: 14,
@@ -111,6 +112,12 @@ const useStyles = makeStyles(() => ({
     border: "none",
     borderRadius: 8,
   },
+  pricingContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  },
 }));
 
 const Cart = (props) => {
@@ -136,22 +143,25 @@ const Cart = (props) => {
       <img src={product.image} alt="product.name" />
       <div className={classes.productDetails}>
         <div className={classes.productName}>{product.name}</div>
-        <div className={classes.productPrice}>{product.price}</div>
-      </div>
-      <div className={classes.buttonsContainer}>
-        <button
-          className={classes.button}
-          onClick={(e) => decreaseCount(product)}
-        >
-          -
-        </button>
-        {product.count}
-        <button
-          className={classes.button}
-          onClick={(e) => increaseCount(product)}
-        >
-          +
-        </button>
+
+        <div className={classes.pricingContainer}>
+          <div className={classes.productPrice}>{product.price}</div>
+          <div className={classes.buttonsContainer}>
+            <button
+              className={classes.button}
+              onClick={(e) => decreaseCount(product)}
+            >
+              -
+            </button>
+            {product.count}
+            <button
+              className={classes.button}
+              onClick={(e) => increaseCount(product)}
+            >
+              +
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   ));

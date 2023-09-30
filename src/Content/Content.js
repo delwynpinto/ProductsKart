@@ -1,16 +1,22 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
 import products from "../data/products.json";
+import ChatIcon from "@material-ui/icons/Chat";
+import ShareIcon from "@material-ui/icons/Share";
 
 const useStyles = makeStyles(() => ({
   root: {
     flex: 1,
-    background: "antiquewhite",
+    background: "rgb(229 232 237)",
     overflow: "hidden",
   },
   header: {
     height: 100,
-    borderBottom: "1px solid gray",
+    paddingLeft: 16,
+    paddingRight: 16,
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   titlePane: {
     height: 60,
@@ -61,6 +67,32 @@ const useStyles = makeStyles(() => ({
     color: "red",
     textAlign: "center",
   },
+  headerItemcontainer: {
+    display: "flex",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    border: "1px solid #ccc",
+    width: 70,
+  },
+  shareContainer: {
+    display: "flex",
+    alignItems: "center",
+    padding: 10,
+    borderRadius: 10,
+    border: "1px solid #ccc",
+    width: 70,
+    backgroundColor: "crimson",
+    marginLeft: 16,
+  },
+  headerIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 10,
+  },
+  headerItemtext: {
+    flex: 1,
+  },
 }));
 
 const Content = (props) => {
@@ -87,7 +119,17 @@ const Content = (props) => {
 
   return (
     <div className={classes.root}>
-      <div className={classes.header}></div>
+      <div className={classes.header}>
+        <div class={classes.headerItemcontainer}>
+          <ChatIcon className={classes.headerIcon} />
+          <div class={classes.headerItemtext}>Chat</div>
+        </div>
+
+        <div class={classes.shareContainer}>
+          <ShareIcon className={classes.headerIcon} />
+          <div class={classes.headerItemtext}>Share</div>
+        </div>
+      </div>
       <div className={classes.titlePane}>
         <label className={classes.titleLabel}>Hamburger</label>
         <div className={classes.subtext}>Discover whatever you need easily</div>
