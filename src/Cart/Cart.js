@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useRef } from "react";
 import { makeStyles } from "@material-ui/core";
 import clsx from "clsx";
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles(() => ({
   overlay: {
     position: "fixed",
-    top: 0,
+    top: "5%",
     right: 0,
     width: "50%",
-    height: "100%",
+    height: "90%",
     backgroundColor: "white",
     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
     overflowY: "auto",
@@ -23,12 +26,15 @@ const useStyles = makeStyles(() => ({
     padding: "16px",
     borderBottom: "1px solid #ccc",
   },
+  productListContainer: {
+    height: "70%",
+    overflow: "auto",
+  },
   product: {
     backgroundColor: "white",
     borderRadius: 8,
     display: "flex",
     justifyContent: "center",
-    width: 175,
     padding: 16,
     margin: 16,
   },
@@ -48,14 +54,81 @@ const useStyles = makeStyles(() => ({
     color: "red",
     textAlign: "center",
   },
+  buttonsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "end",
+  },
+  button: {
+    height: 17,
+    margin: 4,
+    display: "flex",
+    alignItems: "center",
+    backgroundColor: "crimson",
+    color: "white",
+    border: "none",
+    borderRadius: 4,
+  },
+  subtext: {
+    fontSize: 12,
+    color: "gray",
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 600,
+  },
+  heading: {
+    display: "flex",
+    justifyContent: "space-between",
+    margin: 16,
+  },
+  headingLabel: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  closeButton: {
+    borderRadius: "50%",
+    backgroundColor: "transparent",
+    border: "1px solid gray",
+    cursor: "pointer",
+  },
+  totalAmoutContainer: {
+    display: "flex",
+    flexDirection: "column",
+    borderTop: "1px dashed",
+  },
+  totalAmount: {
+    display: "flex",
+    justifyContent: "space-between",
+    margin: 16,
+    fontWeight: 600,
+  },
+  printButton: {
+    height: 30,
+    margin: 16,
+    backgroundColor: "crimson",
+    color: "white",
+    border: "none",
+    borderRadius: 8,
+  },
 }));
 
 const Cart = (props) => {
   const classes = useStyles();
-  const { products, hideCart, increaseCount, decreaseCount } = props;
+  const pdfRef = useRef();
+  const { products, hideCart, increaseCount, decreaseCount, renderCart } =
+    props;
 
   const overlayClass = clsx(classes.overlay, {
     [classes.show]: products && products.length > 0,
+  });
+
+  let totalAmount = 0.0;
+  products.forEach((product) => {
+    const { price: priceString, count } = product;
+    const unitPrice = parseFloat(priceString.split("$")[1]);
+    const price = unitPrice * count;
+    totalAmount = totalAmount + price;
   });
 
   const productsList = products.map((product) => (
@@ -65,19 +138,99 @@ const Cart = (props) => {
         <div className={classes.productName}>{product.name}</div>
         <div className={classes.productPrice}>{product.price}</div>
       </div>
-      <div>
-        <button onClick={(e) => decreaseCount(product)}>-</button>
+      <div className={classes.buttonsContainer}>
+        <button
+          className={classes.button}
+          onClick={(e) => decreaseCount(product)}
+        >
+          -
+        </button>
         {product.count}
-        <button onClick={(e) => increaseCount(product)}>+</button>
+        <button
+          className={classes.button}
+          onClick={(e) => increaseCount(product)}
+        >
+          +
+        </button>
       </div>
     </div>
   ));
 
+  const onPrintBill = () => {
+    const pdf = new jsPDF();
+    pdf.text("Bill", 10, 10);
+
+    const tableData = [];
+
+    products.forEach((product) => {
+      const { price: priceString } = product;
+      const price = parseFloat(priceString.split("$")[1]);
+      tableData.push([
+        { content: `Product Name: ${product.name}`, rowSpan: 1 },
+        { content: `Product Quantity: ${product.count}`, rowSpan: 1 },
+        {
+          content: `Product Price: ${price * product.count}`,
+          rowSpan: 1,
+        },
+      ]);
+      tableData.push([""]); // Empty row for spacing
+    });
+
+    pdf.autoTable({
+      body: tableData,
+    });
+
+    // Draw a dashed top border manually
+    const startX = 10;
+    const startY = pdf.autoTable.previous.finalY + 10;
+    const endX = pdf.internal.pageSize.width - 10;
+    const endY = startY + 20;
+
+    // Dashed line parameters
+    const dashLength = 5;
+    const gapLength = 3;
+
+    for (let i = startX; i < endX; i += dashLength + gapLength) {
+      pdf.line(i, startY, i + dashLength, startY);
+    }
+
+    // Add "Total Amount" label
+    pdf.text("Total Amount", 10, endY + 5);
+
+    // Add the total amount value
+    pdf.text(`$${totalAmount.toFixed(2)}`, 70, endY + 5);
+
+    // Save the PDF to the ref
+    pdfRef.current = pdf;
+
+    // Open the PDF in a new tab
+    pdf.output("dataurlnewwindow");
+  };
+
   return (
     <div className={overlayClass}>
-      <button onClick={hideCart}>Close Cart</button>
+      <div className={classes.heading}>
+        <div className={classes.headingLabel}>
+          <label className={classes.label}>My Order</label>
+          <label className={classes.subtext}>Take Out</label>
+        </div>
+        <button onClick={hideCart} className={classes.closeButton}>
+          <CloseIcon />
+        </button>
+      </div>
 
-      {productsList}
+      <div className={classes.productListContainer}>{productsList}</div>
+
+      <div className={classes.totalAmoutContainer}>
+        <div className={classes.totalAmount}>
+          {" "}
+          <span>Total</span> <span>$ {totalAmount}</span>
+        </div>
+
+        <button className={classes.printButton} onClick={onPrintBill}>
+          Print Bills
+        </button>
+      </div>
     </div>
   );
 };

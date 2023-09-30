@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core";
 import Menu from "./Menu/Menu";
 import Content from "./Content/Content";
@@ -15,9 +15,19 @@ function App() {
   const classes = useStyles();
   const [products, setProducts] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [renderCart, setRenderCart] = useState(false);
 
   const showCart = () => setIsCartOpen(true);
   const hideCart = () => setIsCartOpen(false);
+
+  const startRender = () => setRenderCart(true);
+  const stopRender = () => setRenderCart(false);
+
+  useEffect(() => {
+    if (renderCart) {
+      stopRender();
+    }
+  }, [renderCart, stopRender]);
 
   const addToCart = (product) => {
     const newProduct = { ...product, count: 1 };
@@ -29,6 +39,7 @@ function App() {
       setProducts(productList);
     }
     showCart();
+    startRender();
   };
 
   const increaseCount = (product) => {
@@ -40,6 +51,7 @@ function App() {
       }
     });
     setProducts(productList);
+    startRender();
   };
 
   const decreaseCount = (product) => {
@@ -53,6 +65,7 @@ function App() {
       }
     });
     setProducts(productList);
+    startRender();
   };
 
   return (
@@ -65,6 +78,7 @@ function App() {
           increaseCount={increaseCount}
           decreaseCount={decreaseCount}
           hideCart={hideCart}
+          renderCart={renderCart}
         />
       )}
     </div>
